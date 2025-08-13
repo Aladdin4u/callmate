@@ -13,9 +13,13 @@ export default function HomeScreen() {
           style={styles.reactLogo}
         />
       }>
-      <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-2xl font-bold">Welcome to Nativewind!</Text>
-        <Text className="text-xl font-bold text-red-500">paragrah</Text>
+      <View className="bg-background flex-1 items-center justify-center">
+        <Text className="text-primary font-inter text-2xl font-bold">Welcome to Nativewind!</Text>
+        <Text className="text-secondary font-inter text-xl font-bold">Welcome to Nativewind!</Text>
+        <Text className=" text-xl font-bold">Welcome to no font!</Text>
+        <View className="bg-accent rounded-md px-3 py-2">
+          <Text className="text-xl font-bold text-white">call me</Text>
+        </View>
       </View>
     </ParallaxScrollView>
   );
