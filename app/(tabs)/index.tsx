@@ -1,45 +1,98 @@
-import { Image } from 'expo-image';
-import { StyleSheet, Text, View } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
+import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
+import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+const keys = [
+  ['1', '2', '3'],
+  ['4', '5', '6'],
+  ['7', '8', '9'],
+  ['*', '0', '#'],
+];
 
 export default function HomeScreen() {
+  const [input, setInput] = useState('');
+
+  const handlePress = (key: string) => {
+    setInput((prev) => prev + key);
+  };
+
+  const handleBackPress = () => {
+    setInput((prev) => prev.slice(0, -1));
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <View className="bg-background flex-1 items-center justify-center">
-        <Text className="text-primary font-inter text-2xl font-bold">Welcome to Nativewind!</Text>
-        <Text className="text-secondary font-inter text-xl font-bold">Welcome to Nativewind!</Text>
-        <Text className=" text-xl font-bold">Welcome to no font!</Text>
-        <View className="bg-accent rounded-md px-3 py-2">
-          <Text className="text-xl font-bold text-background">call me</Text>
+    <SafeAreaView className="bg-background flex-1 justify-between gap-10 px-5 py-14">
+      <View className="flex flex-row items-center justify-between">
+        <ThemedText type="subtitle" className="text-primary">
+          Call Mate
+        </ThemedText>
+        <Ionicons name="settings" className="text-secondary" size={24} />
+      </View>
+
+      <View className="gap-4">
+        <ThemedText type="title" className="self-center">
+          {input}
+        </ThemedText>
+        {keys.map((row, i) => (
+          <View key={i} className="flex flex-row justify-between">
+            {row.map((key) => (
+              <TouchableOpacity
+                key={key}
+                className="bg-accent  flex h-20 w-20 items-center justify-center rounded-full"
+                onPress={() => handlePress(key)}>
+                <ThemedText type="title" className="text-primary">
+                  {key}
+                </ThemedText>
+              </TouchableOpacity>
+            ))}
+          </View>
+        ))}
+
+        <View className="flex flex-row items-center justify-between">
+          <View className=" sr h-20 w-20"></View>
+          <TouchableOpacity className="bg-secondary h-20 w-20 items-center justify-center rounded-full">
+            <Ionicons name="call" size={32} />
+          </TouchableOpacity>
+
+          <TouchableOpacity className="h-20 w-20 items-center justify-center self-center rounded-full">
+            <Ionicons
+              name="arrow-back"
+              className="text-secondary"
+              size={32}
+              onPress={handleBackPress}
+            />
+          </TouchableOpacity>
         </View>
       </View>
-    </ParallaxScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  container: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  display: {
+    fontSize: 32,
+    marginBottom: 20,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  row: {
+    flexDirection: 'row',
+  },
+  key: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#EEE',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10,
+  },
+  keyText: {
+    fontSize: 28,
   },
 });
+
