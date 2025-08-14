@@ -10,6 +10,7 @@ export const Colors = {
   primary: '#868B8E',
   background: '#EEEDE7',
   border: '#B9B7BD',
+  accent: '#E7D2CC',
   light: {
     text: '#11181C',
     background: '#fff',

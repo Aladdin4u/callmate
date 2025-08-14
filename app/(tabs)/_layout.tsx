@@ -40,6 +40,20 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="contact.sensor" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="reminder"
+        options={{
+          title: 'Reminder',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="calendar" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="add-reminder"
+        options={{
+          title: 'Add Reminder',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="plus" color={color} />,
+        }}
+      />
     </Tabs>
   );
 }
