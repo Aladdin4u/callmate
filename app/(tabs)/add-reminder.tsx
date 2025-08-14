@@ -1,3 +1,4 @@
+import SearchBar from '@/components/Searchbar';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -18,7 +19,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import { Button, HelperText, List, Modal, Portal, Searchbar } from 'react-native-paper';
+import { Button, HelperText, List, Modal, Portal } from 'react-native-paper';
 
 import * as Yup from 'yup';
 
@@ -65,7 +66,7 @@ export default function AddReminderScreen() {
         });
 
         if (data.length > 0) {
-          const mapped = data.slice(0, 12).map((item, i) => {
+          const mapped = data.map((item, i) => {
             if (item.name && item.phoneNumbers && item.phoneNumbers.length > 0) {
               return {
                 id: item.id,
@@ -132,11 +133,10 @@ export default function AddReminderScreen() {
                       onDismiss={hideModal}
                       contentContainerStyle={styles.containerStyle}>
                       <View className="sticky top-0 z-10 mt-2 w-full">
-                        <Searchbar
+                        <SearchBar
                           placeholder="Search contacts or number"
                           value={query}
                           onChangeText={setQuery}
-                          style={styles.input}
                         />
                       </View>
                       <ScrollView className="flex-1 divide-y overflow-y-auto px-4 ">
@@ -263,10 +263,5 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     height: 500,
     overflow: 'hidden',
-  },
-  input: {
-    backgroundColor: Colors.background,
-    borderColor: Colors.border,
-    borderRadius: 6,
   },
 });

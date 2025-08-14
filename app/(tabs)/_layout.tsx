@@ -54,6 +54,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="plus" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="call-history"
+        options={{
+          title: 'Call History',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="record.circle" color={color} />,
+        }}
+      />
     </Tabs>
   );
 }

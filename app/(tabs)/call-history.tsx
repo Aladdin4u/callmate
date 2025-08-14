@@ -1,15 +1,16 @@
-import SearchBar from '@/components/Searchbar';
 import { ThemedText } from '@/components/ThemedText';
-import { Ionicons } from '@expo/vector-icons';
+import { Colors } from '@/constants/Colors';
+import { formatTime } from '@/utils/date';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Alert, FlatList, SafeAreaView, TouchableOpacity, View } from 'react-native';
-import { Avatar } from 'react-native-paper';
+import { FlatList, SafeAreaView, View } from 'react-native';
 
 type ContactType = {
   id: string;
   name: string;
-  image: string;
   phone: string;
+  type: 'missed' | 'incomming' | 'ougoing';
+  time: Date;
 };
 
 const MOCK_CONTACTS = [
@@ -17,23 +18,26 @@ const MOCK_CONTACTS = [
     id: '1',
     name: 'Alice Johnson',
     phone: '+2348001112222',
-    image: 'https://gravatar.com/avatar/8ee5935baf60e8484c78f108f594bdc1?s=400&d=robohash&r=x',
+    type: 'missed',
+    time: 1755167934170,
   },
   {
     id: '2',
     name: 'Ben Okafor',
     phone: '+2348003334444',
-    image: 'https://robohash.org/4fda73dd97fbd2bacda6c3defcc84eb6?set=set4&bgset=&size=400x400',
+    type: 'incomming',
+    time: 1755167934170,
   },
   {
     id: '3',
     name: 'Chinelo Eze',
     phone: '+2348005556666',
-    image: 'https://gravatar.com/avatar/e3ac9583b64eb38f76c42d8855635332?s=400&d=robohash&r=x',
+    type: 'outgoing',
+    time: 1755167934170,
   },
 ];
 
-export default function ContactScreen() {
+export default function CallHistoryScreen() {
   const [query, setQuery] = useState('');
   const [contacts, setContacts] = useState(MOCK_CONTACTS);
 
@@ -43,22 +47,33 @@ export default function ContactScreen() {
     return c.name.toLowerCase().includes(q) || c.phone.includes(q);
   });
 
-  const onCallPress = (contact: ContactType) => {
-    Alert.alert('Call', `Would call ${contact.name} at ${contact.phone}`);
-  };
-
   const Contact = ({ item }: { item: ContactType }) => {
     return (
       <View className="mb-4 flex flex-row items-center justify-between">
         <View className="flex flex-row items-center gap-2">
-          <Avatar.Image size={32} source={{ uri: item.image }} />
-          <ThemedText>{item.name}</ThemedText>
+          <MaterialIcons
+            name={
+              item.type === 'missed'
+                ? 'call-missed'
+                : item.type === 'incomming'
+                  ? 'call-received'
+                  : 'call-made'
+            }
+            size={24}
+            color={
+              item.type === 'missed'
+                ? Colors.accent
+                : item.type === 'incomming'
+                  ? Colors.primary
+                  : Colors.border
+            }
+          />
+          <View>
+            <ThemedText>{item.name}</ThemedText>
+            <ThemedText className="text-secondary">{item.phone}</ThemedText>
+          </View>
         </View>
-        <TouchableOpacity
-          className="bg-accent text-primary items-center justify-center rounded-full p-2"
-          onPress={() => onCallPress(item)}>
-          <Ionicons name="call" size={24} />
-        </TouchableOpacity>
+        <ThemedText>{formatTime(item.time)}</ThemedText>
       </View>
     );
   };
@@ -67,9 +82,8 @@ export default function ContactScreen() {
     return (
       <View className="mb-10 gap-4">
         <ThemedText type="title" className="text-primary">
-          Contacts
+          Call History
         </ThemedText>
-        <SearchBar placeholder="Search contacts or number" value={query} onChangeText={setQuery} />
       </View>
     );
   };
