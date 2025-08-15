@@ -1,5 +1,6 @@
 import SearchBar from '@/components/Searchbar';
 import { ThemedText } from '@/components/ThemedText';
+import { MOCK_CONTACTS } from '@/data/contacts';
 import { callPhone } from '@/utils/call';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
@@ -12,27 +13,6 @@ type ContactType = {
   image: string;
   phone: string;
 };
-
-const MOCK_CONTACTS = [
-  {
-    id: '1',
-    name: 'Alice Johnson',
-    phone: '+2348001112222',
-    image: 'https://gravatar.com/avatar/8ee5935baf60e8484c78f108f594bdc1?s=400&d=robohash&r=x',
-  },
-  {
-    id: '2',
-    name: 'Ben Okafor',
-    phone: '+2348003334444',
-    image: 'https://robohash.org/4fda73dd97fbd2bacda6c3defcc84eb6?set=set4&bgset=&size=400x400',
-  },
-  {
-    id: '3',
-    name: 'Chinelo Eze',
-    phone: '+2348005556666',
-    image: 'https://gravatar.com/avatar/e3ac9583b64eb38f76c42d8855635332?s=400&d=robohash&r=x',
-  },
-];
 
 export default function ContactScreen() {
   const [query, setQuery] = useState('');
@@ -50,7 +30,7 @@ export default function ContactScreen() {
 
   const Contact = ({ item }: { item: ContactType }) => {
     return (
-      <View className="mb-4 flex flex-row items-center justify-between">
+      <View className="my-4 flex flex-row items-center justify-between px-5">
         <View className="flex flex-row items-center gap-2">
           <Avatar.Image size={32} source={{ uri: item.image }} />
           <ThemedText>{item.name}</ThemedText>
@@ -64,23 +44,18 @@ export default function ContactScreen() {
     );
   };
 
-  const Header = () => {
-    return (
-      <View className="mb-10 gap-4">
+  return (
+    <SafeAreaView className="bg-background flex-1 justify-between gap-2 py-14">
+      <View className="bg-background gap-4 px-5">
         <ThemedText type="title" className="text-primary">
           Contacts
         </ThemedText>
         <SearchBar placeholder="Search contacts or number" value={query} onChangeText={setQuery} />
       </View>
-    );
-  };
-  return (
-    <SafeAreaView className="bg-background flex-1 justify-between gap-10 px-5 py-14">
       <FlatList
         data={filtered}
         renderItem={({ item }: { item: ContactType }) => <Contact item={item} />}
         keyExtractor={(item) => item.id}
-        ListHeaderComponent={<Header />}
         ListEmptyComponent={
           <ThemedText style={{ textAlign: 'center' }}>No contacts found.</ThemedText>
         }

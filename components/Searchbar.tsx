@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: Colors.background,
     borderColor: Colors.border,
+    borderWidth: 1,
     borderRadius: 6,
   },
 });

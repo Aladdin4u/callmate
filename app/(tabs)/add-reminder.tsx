@@ -1,15 +1,15 @@
 import SearchBar from '@/components/Searchbar';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
+import { MOCK_CONTACTS } from '@/data/contacts';
 import { ContactType, ScheduleFormValues } from '@/types';
 import { getSecondsFormatter } from '@/utils/date';
 import { schedulePushNotification } from '@/utils/schedulePushNotification';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import * as Contacts from 'expo-contacts';
 import { router } from 'expo-router';
 import { Formik, FormikHelpers, FormikValues } from 'formik';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Alert,
   Keyboard,
@@ -45,41 +45,44 @@ export default function AddReminderScreen() {
   const [date, setDate] = useState(new Date());
   const [showDate, setshowDate] = useState(false);
   const [showTime, setshowTime] = useState(false);
-  const [contacts, setContacts] = useState<ContactType[]>([]);
+  const [contacts, setContacts] = useState<ContactType[]>(MOCK_CONTACTS);
 
-  useEffect(() => {
-    (async () => {
-      const { status } = await Contacts.requestPermissionsAsync();
-      if (status === 'granted') {
-        const { data } = await Contacts.getContactsAsync({
-          fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Image],
-        });
+  // useEffect(() => {
+  //   (async () => {
+  //     const { status } = await Contacts.requestPermissionsAsync();
+  //     if (status === 'granted') {
+  //       const { data } = await Contacts.getContactsAsync({
+  //         fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Image],
+  //       });
 
-        if (data.length > 0) {
-          const mapped = data.slice(0, 20).map((item, i) => {
-            if (item.name && item.phoneNumbers && item.phoneNumbers.length > 0) {
-              return {
-                id: item.id,
-                name: item.name,
-                phone: item.phoneNumbers[0].number,
-                image: item.imageAvailable ? item?.image?.uri : null,
-              };
-            }
-          });
+  //       if (data.length > 0) {
+  //         const mapped = data.map((item, i) => {
+  //           if (item.name && item.phoneNumbers && item.phoneNumbers.length > 0) {
+  //             return {
+  //               id: item.id,
+  //               name: item.name,
+  //               phone: item.phoneNumbers[0].number,
+  //               image: item.imageAvailable ? item?.image?.uri : null,
+  //             };
+  //           }
+  //         });
 
-          setContacts(mapped);
-        }
-      }
-    })();
-  }, []);
+  //         setContacts(mapped);
+  //       }
+  //     }
+  //   })();
+  // }, []);
 
-  const filtered = contacts.filter((c) => {
+  const filtered = contacts.slice(0, 20).filter((c) => {
     const q = query.trim().toLowerCase();
     if (!q) return true;
     return c?.name.toLowerCase().includes(q) || c?.phone.includes(q);
   });
 
-  const onSubmit = async (values: FormikValues, { resetForm }: FormikHelpers<ScheduleFormValues>) => {
+  const onSubmit = async (
+    values: FormikValues,
+    { resetForm }: FormikHelpers<ScheduleFormValues>
+  ) => {
     const triggerSeconds = getSecondsFormatter(values.date, values.time);
     if (triggerSeconds.seconds > 0) {
       try {
@@ -141,7 +144,7 @@ export default function AddReminderScreen() {
                       visible={visible}
                       onDismiss={hideModal}
                       contentContainerStyle={styles.containerStyle}>
-                      <View className="sticky top-0 z-10 mt-2 w-full">
+                      <View className="sticky top-0 z-10 mt-2 w-full px-4">
                         <SearchBar
                           placeholder="Search contacts or number"
                           value={query}
@@ -174,7 +177,7 @@ export default function AddReminderScreen() {
                     mode="outlined"
                     className="font-inter rounded-sm bg-green-50 px-3 py-2"
                     onPress={showModal}>
-                    {values.contact
+                    {values.contact.name
                       ? `${values.contact.name} - ${values.contact.phone}`
                       : 'Choose contact'}
                   </Button>

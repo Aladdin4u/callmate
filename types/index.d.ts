@@ -39,3 +39,17 @@ export interface NotificationType {
   date: string;
   time: string;
 }
+
+export interface CallType {
+  id: string;
+  name: string;
+  phone: string;
+  type: CallStatus;
+  time: Date;
+}
+
+export enum CallStatus {
+  Missed = 'missed',
+  Incoming = 'incomming',
+  Outgoing = 'outgoing',
+}
