@@ -2,7 +2,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { callPhone } from '@/utils/call';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, TouchableOpacity, View } from 'react-native';
 
 const keys = [
   ['1', '2', '3'],
@@ -80,30 +80,3 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  display: {
-    fontSize: 32,
-    marginBottom: 20,
-  },
-  row: {
-    flexDirection: 'row',
-  },
-  key: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#EEE',
-    justifyContent: 'center',
-    alignItems: 'center',
-    margin: 10,
-  },
-  keyText: {
-    fontSize: 28,
-  },
-});

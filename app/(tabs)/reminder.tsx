@@ -2,23 +2,29 @@ import { ThemedText } from '@/components/ThemedText';
 import { NotificationType } from '@/types';
 import { formatedDate, formatTime12hr } from '@/utils/date';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { FlatList, SafeAreaView, View } from 'react-native';
 import { Avatar, FAB } from 'react-native-paper';
 
 export default function ReminderScreen() {
   const [contacts, setContacts] = useState<NotificationType[]>([]);
 
-  useEffect(() => {
-    getNotifications();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getNotifications();
+
+      return () => {
+        // This code runs when the screen is unfocused or unmounted
+      };
+    }, [])
+  );
 
   const getNotifications = async () => {
     try {
       const notifications = await Notifications.getAllScheduledNotificationsAsync();
-      console.log('noyfgtst', notifications);
       const mapped = notifications.map((item: any, i) => {
         const data = item?.content?.data;
         return {

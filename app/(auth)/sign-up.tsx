@@ -1,7 +1,8 @@
 import Input from '@/components/Input';
 import { ThemedText } from '@/components/ThemedText';
+import { SignUpFormValues } from '@/types';
 import { Link, router } from 'expo-router';
-import { Formik, FormikValues } from 'formik';
+import { Formik, FormikHelpers, FormikValues } from 'formik';
 import { useState } from 'react';
 import {
   Alert,
@@ -29,8 +30,9 @@ const SignupSchema = Yup.object().shape({
 
 export default function SignUpScreen() {
   const [open, setOpen] = useState(false);
-  const onSubmit = async (values: FormikValues) => {
+  const onSubmit = async (values: FormikValues, { resetForm }: FormikHelpers<SignUpFormValues>) => {
     try {
+      resetForm();
       router.replace('/(auth)/login');
       Alert.alert('success', 'Sign up successfully!');
     } catch (e) {

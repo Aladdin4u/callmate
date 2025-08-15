@@ -1,14 +1,14 @@
 import SearchBar from '@/components/Searchbar';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
-import { ContactType } from '@/types';
+import { ContactType, ScheduleFormValues } from '@/types';
 import { getSecondsFormatter } from '@/utils/date';
 import { schedulePushNotification } from '@/utils/schedulePushNotification';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Contacts from 'expo-contacts';
 import { router } from 'expo-router';
-import { Formik, FormikValues } from 'formik';
+import { Formik, FormikHelpers, FormikValues } from 'formik';
 import { useEffect, useState } from 'react';
 import {
   Alert,
@@ -79,18 +79,18 @@ export default function AddReminderScreen() {
     return c?.name.toLowerCase().includes(q) || c?.phone.includes(q);
   });
 
-  const onSubmit = async (values: FormikValues) => {
+  const onSubmit = async (values: FormikValues, { resetForm }: FormikHelpers<ScheduleFormValues>) => {
     const triggerSeconds = getSecondsFormatter(values.date, values.time);
-    console.log('va', values, triggerSeconds);
     if (triggerSeconds.seconds > 0) {
       try {
-        values.id = values.contact.id;
+        values.id = values.contact.id + Date.now();
         // convert date and time back to string
         values.date = new Date(values.date).toISOString();
         values.time = new Date(values.time).toISOString();
 
         const res = await schedulePushNotification(values, triggerSeconds.seconds);
         if (res) {
+          resetForm();
           Alert.alert('Scheduled', `Notification scheduled in ${triggerSeconds.humanSeconds}`);
           router.replace('/(tabs)/reminder');
         }
@@ -111,7 +111,12 @@ export default function AddReminderScreen() {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Formik
             initialValues={{
-              contact: '',
+              contact: {
+                id: '',
+                name: '',
+                image: '',
+                phone: '',
+              },
               date: '',
               time: '',
             }}
@@ -175,7 +180,7 @@ export default function AddReminderScreen() {
                   </Button>
                   {touched.contact && errors.contact && (
                     <HelperText type="error" visible={true}>
-                      {errors.contact}
+                      {errors.contact.name}
                     </HelperText>
                   )}
                 </View>

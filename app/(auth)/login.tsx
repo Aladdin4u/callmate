@@ -1,7 +1,8 @@
 import Input from '@/components/Input';
 import { ThemedText } from '@/components/ThemedText';
+import { LoginFormValues } from '@/types';
 import { Link, router } from 'expo-router';
-import { Formik, FormikValues } from 'formik';
+import { Formik, FormikHelpers, FormikValues } from 'formik';
 import { useState } from 'react';
 import {
   Alert,
@@ -24,10 +25,11 @@ const SigninSchema = Yup.object().shape({
 
 export default function LoginScreen() {
   const [open, setOpen] = useState(false);
-  const onSubmit = async (values: FormikValues) => {
+  const onSubmit = async (values: FormikValues, { resetForm }: FormikHelpers<LoginFormValues>) => {
     try {
+      resetForm();
       Alert.alert('success', 'login successfully!');
-      router.replace('/(tabs)');
+      router.replace('/notification');
     } catch (e) {
       console.error(e);
       return Alert.alert('Error', 'Faild to login');
@@ -94,7 +96,7 @@ export default function LoginScreen() {
                 <Button
                   mode="contained"
                   onPress={(e) => handleSubmit()}
-                  className="font-inter rounded-sm bg-green-50 px-3 py-2"
+                  className="font-inter rounded-sm px-3 py-2"
                   buttonColor="#868B8E"
                   disabled={errors.email != null || errors.password != null}>
                   Login
