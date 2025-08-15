@@ -1,4 +1,5 @@
 import { ThemedText } from '@/components/ThemedText';
+import { callPhone } from '@/utils/call';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -21,12 +22,21 @@ export default function HomeScreen() {
     setInput((prev) => prev.slice(0, -1));
   };
 
+  const handleCallPress = () => {
+    if (input) callPhone(input);
+  };
+
   return (
     <SafeAreaView className="bg-background flex-1 justify-between gap-10 px-5 py-14">
       <View className="flex flex-row items-center justify-between">
-        <ThemedText type="subtitle" className="text-primary">
-          Call Mate
-        </ThemedText>
+        <View>
+          <ThemedText type="subtitle" className="text-primary">
+            Welcome to CallMate
+          </ThemedText>
+          <ThemedText className="text-secondary">
+            Fast, smart calling with reminders & scheduling.
+          </ThemedText>
+        </View>
         <Ionicons name="settings" className="text-secondary" size={24} />
       </View>
 
@@ -51,7 +61,9 @@ export default function HomeScreen() {
 
         <View className="flex flex-row items-center justify-between">
           <View className=" sr h-20 w-20"></View>
-          <TouchableOpacity className="bg-secondary h-20 w-20 items-center justify-center rounded-full">
+          <TouchableOpacity
+            className="bg-secondary h-20 w-20 items-center justify-center rounded-full"
+            onPress={handleCallPress}>
             <Ionicons name="call" size={32} />
           </TouchableOpacity>
 
@@ -95,4 +107,3 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
 });
-

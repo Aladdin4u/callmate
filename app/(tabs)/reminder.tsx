@@ -1,50 +1,42 @@
 import { ThemedText } from '@/components/ThemedText';
+import { NotificationType } from '@/types';
+import { formatedDate, formatTime12hr } from '@/utils/date';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, View } from 'react-native';
 import { Avatar, FAB } from 'react-native-paper';
 
-type ContactType = {
-  id: string;
-  name: string;
-  image: string;
-  phone: string;
-  date: string;
-  time: string;
-};
-
-const MOCK_CONTACTS = [
-  {
-    id: '1',
-    name: 'Alice Johnson',
-    phone: '+2348001112222',
-    image: 'https://gravatar.com/avatar/8ee5935baf60e8484c78f108f594bdc1?s=400&d=robohash&r=x',
-    date: '8/13/2025',
-    time: '22:36:29',
-  },
-  {
-    id: '2',
-    name: 'Ben Okafor',
-    phone: '+2348003334444',
-    image: 'https://robohash.org/4fda73dd97fbd2bacda6c3defcc84eb6?set=set4&bgset=&size=400x400',
-    date: '8/13/2025',
-    time: '22:36:29',
-  },
-  {
-    id: '3',
-    name: 'Chinelo Eze',
-    phone: '+2348005556666',
-    image: 'https://gravatar.com/avatar/e3ac9583b64eb38f76c42d8855635332?s=400&d=robohash&r=x',
-    date: '8/13/2025',
-    time: '22:36:29',
-  },
-];
-
 export default function ReminderScreen() {
-  const [contacts, setContacts] = useState(MOCK_CONTACTS);
+  const [contacts, setContacts] = useState<NotificationType[]>([]);
 
-  const Reminder = ({ item }: { item: ContactType }) => {
+  useEffect(() => {
+    getNotifications();
+  }, []);
+
+  const getNotifications = async () => {
+    try {
+      const notifications = await Notifications.getAllScheduledNotificationsAsync();
+      console.log('noyfgtst', notifications);
+      const mapped = notifications.map((item: any, i) => {
+        const data = item?.content?.data;
+        return {
+          id: data.id,
+          name: data?.contact.name,
+          phone: data?.contact.phone,
+          image: data?.contact.image,
+          date: data.date,
+          time: data.time,
+        };
+      });
+      setContacts(mapped);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const Reminder = ({ item }: { item: NotificationType }) => {
     return (
       <View className="mb-4 flex w-full flex-row justify-between gap-2">
         <View className="flex flex-row items-center gap-2">
@@ -57,8 +49,8 @@ export default function ReminderScreen() {
         <View className="items-end gap-2">
           <MaterialCommunityIcons name="alarm-multiple" size={24} />
           <View className="flex flex-row justify-end gap-2">
-            <ThemedText>{item.date}</ThemedText>
-            <ThemedText>{item.time}</ThemedText>
+            <ThemedText>{formatedDate(item.date)}</ThemedText>
+            <ThemedText>{formatTime12hr(item.time)}</ThemedText>
           </View>
         </View>
       </View>
@@ -78,7 +70,7 @@ export default function ReminderScreen() {
     <SafeAreaView className="bg-background flex-1 justify-between gap-10 px-5 py-14">
       <FlatList
         data={contacts}
-        renderItem={({ item }: { item: ContactType }) => <Reminder item={item} />}
+        renderItem={({ item }: { item: NotificationType }) => <Reminder item={item} />}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={<Header />}
         ListEmptyComponent={

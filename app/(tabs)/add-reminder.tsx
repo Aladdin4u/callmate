@@ -1,6 +1,9 @@
 import SearchBar from '@/components/Searchbar';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
+import { ContactType } from '@/types';
+import { getSecondsFormatter } from '@/utils/date';
+import { schedulePushNotification } from '@/utils/schedulePushNotification';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Contacts from 'expo-contacts';
@@ -34,19 +37,6 @@ const ScheduleSchema = Yup.object().shape({
   time: Yup.date().required('Time is required'),
 });
 
-type ContactType = {
-  id: string;
-  name: string;
-  image: string;
-  phone: string;
-};
-
-type ScheduleType = {
-  id?: string;
-  contact: ContactType;
-  date: string;
-  time: string;
-};
 export default function AddReminderScreen() {
   const [visible, setVisible] = useState(false);
   const [query, setQuery] = useState('');
@@ -66,7 +56,7 @@ export default function AddReminderScreen() {
         });
 
         if (data.length > 0) {
-          const mapped = data.map((item, i) => {
+          const mapped = data.slice(0, 20).map((item, i) => {
             if (item.name && item.phoneNumbers && item.phoneNumbers.length > 0) {
               return {
                 id: item.id,
@@ -90,12 +80,26 @@ export default function AddReminderScreen() {
   });
 
   const onSubmit = async (values: FormikValues) => {
-    try {
-      router.replace('/(tabs)/reminder');
-      Alert.alert('success', 'Reminder  successfully!');
-    } catch (e) {
-      console.error(e);
-      return Alert.alert('Error', 'Faild to login');
+    const triggerSeconds = getSecondsFormatter(values.date, values.time);
+    console.log('va', values, triggerSeconds);
+    if (triggerSeconds.seconds > 0) {
+      try {
+        values.id = values.contact.id;
+        // convert date and time back to string
+        values.date = new Date(values.date).toISOString();
+        values.time = new Date(values.time).toISOString();
+
+        const res = await schedulePushNotification(values, triggerSeconds.seconds);
+        if (res) {
+          Alert.alert('Scheduled', `Notification scheduled in ${triggerSeconds.humanSeconds}`);
+          router.replace('/(tabs)/reminder');
+        }
+      } catch (e) {
+        console.error(e);
+        return Alert.alert('Error', 'Faild to login');
+      }
+    } else {
+      Alert.alert('Error', 'Date and time must be greater than now');
     }
   };
 

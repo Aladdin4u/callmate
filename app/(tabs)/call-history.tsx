@@ -1,6 +1,6 @@
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
-import { formatTime } from '@/utils/date';
+import { formatTime12hr } from '@/utils/date';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { FlatList, SafeAreaView, View } from 'react-native';
@@ -73,7 +73,7 @@ export default function CallHistoryScreen() {
             <ThemedText className="text-secondary">{item.phone}</ThemedText>
           </View>
         </View>
-        <ThemedText>{formatTime(item.time)}</ThemedText>
+        <ThemedText>{formatTime12hr(item.time)}</ThemedText>
       </View>
     );
   };

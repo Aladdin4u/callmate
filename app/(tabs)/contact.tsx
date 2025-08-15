@@ -1,8 +1,9 @@
 import SearchBar from '@/components/Searchbar';
 import { ThemedText } from '@/components/ThemedText';
+import { callPhone } from '@/utils/call';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Alert, FlatList, SafeAreaView, TouchableOpacity, View } from 'react-native';
+import { FlatList, SafeAreaView, TouchableOpacity, View } from 'react-native';
 import { Avatar } from 'react-native-paper';
 
 type ContactType = {
@@ -44,7 +45,7 @@ export default function ContactScreen() {
   });
 
   const onCallPress = (contact: ContactType) => {
-    Alert.alert('Call', `Would call ${contact.name} at ${contact.phone}`);
+    callPhone(contact.phone);
   };
 
   const Contact = ({ item }: { item: ContactType }) => {
