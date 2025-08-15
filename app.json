@@ -18,10 +18,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "permissions": [
-        "android.permission.READ_CONTACTS",
-        "android.permission.WRITE_CONTACTS"
-      ],
+      "permissions": ["android.permission.READ_CONTACTS", "android.permission.WRITE_CONTACTS"],
       "package": "com.aladdin4u.CallMate"
     },
     "web": {
@@ -35,8 +32,7 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
+          "resizeMode": "cover",
           "backgroundColor": "#ffffff"
         }
       ],
@@ -58,6 +54,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "0ba3c140-96fa-4ba5-8f07-7f35df2849a2"
+      }
     }
   }
 }
