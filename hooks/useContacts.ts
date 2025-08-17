@@ -37,9 +37,6 @@ export function useContacts(pageSize: number = 20) {
           name: deferredQuery || undefined,
         });
 
-        console.log('dda', data, hasNextPage);
-        
-
         const formatted = data
           .filter((item) => item.phoneNumbers)
           .map((item, i) => {

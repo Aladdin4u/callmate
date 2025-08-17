@@ -1,8 +1,8 @@
 import SearchBar from '@/components/Searchbar';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
-import { MOCK_CONTACTS } from '@/data/contacts';
-import { ContactType, ScheduleFormValues } from '@/types';
+import { useContacts } from '@/hooks/useContacts';
+import { ScheduleFormValues } from '@/types';
 import { getSecondsFormatter } from '@/utils/date';
 import { schedulePushNotification } from '@/utils/schedulePushNotification';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -39,45 +39,12 @@ const ScheduleSchema = Yup.object().shape({
 
 export default function AddReminderScreen() {
   const [visible, setVisible] = useState(false);
-  const [query, setQuery] = useState('');
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const [date, setDate] = useState(new Date());
   const [showDate, setshowDate] = useState(false);
   const [showTime, setshowTime] = useState(false);
-  const [contacts, setContacts] = useState<ContactType[]>(MOCK_CONTACTS);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const { status } = await Contacts.requestPermissionsAsync();
-  //     if (status === 'granted') {
-  //       const { data } = await Contacts.getContactsAsync({
-  //         fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Image],
-  //       });
-
-  //       if (data.length > 0) {
-  //         const mapped = data.map((item, i) => {
-  //           if (item.name && item.phoneNumbers && item.phoneNumbers.length > 0) {
-  //             return {
-  //               id: item.id,
-  //               name: item.name,
-  //               phone: item.phoneNumbers[0].number,
-  //               image: item.imageAvailable ? item?.image?.uri : null,
-  //             };
-  //           }
-  //         });
-
-  //         setContacts(mapped);
-  //       }
-  //     }
-  //   })();
-  // }, []);
-
-  const filtered = contacts.slice(0, 20).filter((c) => {
-    const q = query.trim().toLowerCase();
-    if (!q) return true;
-    return c?.name.toLowerCase().includes(q) || c?.phone.includes(q);
-  });
+  const { contacts, query, setQuery } = useContacts();
 
   const onSubmit = async (
     values: FormikValues,
@@ -117,7 +84,6 @@ export default function AddReminderScreen() {
               contact: {
                 id: '',
                 name: '',
-                image: '',
                 phone: '',
               },
               date: '',
@@ -152,8 +118,8 @@ export default function AddReminderScreen() {
                         />
                       </View>
                       <ScrollView className="flex-1 divide-y overflow-y-auto px-4 ">
-                        {filtered.length > 0 ? (
-                          filtered.map((item, index) => (
+                        {contacts.length > 0 ? (
+                          contacts.map((item, index) => (
                             <TouchableOpacity
                               key={index}
                               onPress={() => {
