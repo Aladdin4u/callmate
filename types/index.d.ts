@@ -20,7 +20,7 @@ export interface ScheduleFormValues {
 export interface ContactType {
   id: string;
   name: string;
-  image: string;
+  image?: string;
   phone: string;
 }
 
