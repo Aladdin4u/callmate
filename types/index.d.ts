@@ -41,15 +41,15 @@ export interface NotificationType {
 }
 
 export interface CallType {
-  id: string;
   name: string;
-  phone: string;
+  phoneNumber: string;
   type: CallStatus;
-  time: Date;
+  dateTime: string;
+  timestamp: string;
 }
 
 export enum CallStatus {
-  Missed = 'missed',
-  Incoming = 'incomming',
-  Outgoing = 'outgoing',
+  Missed = 'MISSED',
+  Incoming = 'INCOMING',
+  Outgoing = 'OUTGOING',
 }

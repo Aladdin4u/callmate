@@ -1,56 +1,75 @@
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
-import { MOCK_CAllS } from '@/data/calls';
 import { CallType } from '@/types';
-import { formatTime12hr } from '@/utils/date';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useState } from 'react';
-import { FlatList, SafeAreaView, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { FlatList, PermissionsAndroid, SafeAreaView, View } from 'react-native';
+import CallLogs from 'react-native-call-log';
 
 export default function CallHistoryScreen() {
   const [query, setQuery] = useState('');
-  const [contacts, setContacts] = useState(MOCK_CAllS);
+  const [callLogs, setcallLogs] = useState([]);
 
-  const filtered = contacts.filter((c) => {
-    const q = query.trim().toLowerCase();
-    if (!q) return true;
-    return c.name.toLowerCase().includes(q) || c.phone.includes(q);
-  });
+  const readLogs = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_CALL_LOG,
+        {
+          title: 'Call Log Example',
+          message: 'Access your call logs',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        CallLogs.load(20).then((c) => setcallLogs(c));
+      } else {
+        console.log('Call Log permission denied');
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    readLogs();
+  }, []);
 
   const Contact = ({ item }: { item: CallType }) => {
     return (
-      <View className="mb-4 flex flex-row items-center justify-between">
+      <View className="mb-4 flex flex-row items-center justify-between px-5">
         <View className="flex flex-row items-center gap-2">
           <MaterialIcons
             name={
-              item.type === 'missed'
+              item.type === 'MISSED'
                 ? 'call-missed'
-                : item.type === 'incomming'
+                : item.type === 'INCOMING'
                   ? 'call-received'
                   : 'call-made'
             }
             size={24}
             color={
-              item.type === 'missed'
+              item.type === 'MISSED'
                 ? Colors.accent
-                : item.type === 'incomming'
+                : item.type === 'INCOMING'
                   ? Colors.primary
                   : Colors.border
             }
           />
           <View>
             <ThemedText>{item.name}</ThemedText>
-            <ThemedText className="text-secondary">{item.phone}</ThemedText>
+            <ThemedText className="text-secondary">{item.phoneNumber}</ThemedText>
           </View>
         </View>
-        <ThemedText>{formatTime12hr(item.time)}</ThemedText>
+        <ThemedText>{item.dateTime}</ThemedText>
       </View>
     );
   };
 
   const Header = () => {
     return (
-      <View className="mb-10 gap-4">
+      <View className="px-5">
         <ThemedText type="title" className="text-primary">
           Call History
         </ThemedText>
@@ -58,14 +77,14 @@ export default function CallHistoryScreen() {
     );
   };
   return (
-    <SafeAreaView className="bg-background flex-1 justify-between gap-10 px-5 py-14">
+    <SafeAreaView className="flex-1 justify-between gap-10 bg-background pt-14">
+      <Header />
       <FlatList
-        data={filtered}
+        data={callLogs}
         renderItem={({ item }: { item: CallType }) => <Contact item={item} />}
-        keyExtractor={(item) => item.id}
-        ListHeaderComponent={<Header />}
+        keyExtractor={(item) => item.timestamp}
         ListEmptyComponent={
-          <ThemedText style={{ textAlign: 'center' }}>No contacts found.</ThemedText>
+          <ThemedText style={{ textAlign: 'center' }}>No callLogs found.</ThemedText>
         }
       />
     </SafeAreaView>
