@@ -1,0 +1,4 @@
+appId: com.aladdin4u.CallMate
+---
+- runFlow: login.yaml
+- tapOn: Allow

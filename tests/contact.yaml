@@ -1,0 +1,5 @@
+appId: com.aladdin4u.CallMate
+---
+- runFlow: home.yaml
+- tapOn: Search contacts or number
+- inputRandomPersonName

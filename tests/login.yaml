@@ -1,0 +1,8 @@
+appId: com.aladdin4u.CallMate
+---
+- launchApp
+- tapOn: email
+- inputRandomEmail
+- tapOn: Password
+- inputText: TestPassword
+- tapOn: Login
